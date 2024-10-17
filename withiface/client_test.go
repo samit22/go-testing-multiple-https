@@ -2,6 +2,7 @@ package withiface
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -54,6 +55,8 @@ func (m *mockClient) Do(req *http.Request) (*http.Response, error) {
 }
 
 func Test_GetHTTPBin(t *testing.T) {
+	ctx := context.Background()
+
 	t.Log("successful response")
 	{
 		client := &mockClient{
@@ -66,7 +69,7 @@ func Test_GetHTTPBin(t *testing.T) {
 			Client: client,
 		}
 
-		res, err := req.GetHTTPBin()
+		res, err := req.GetHTTPBin(ctx)
 		assert.NoError(t, err, "unexpected error %v", err)
 		assert.Equal(t, client.res.response, res)
 
@@ -86,7 +89,7 @@ func Test_GetHTTPBin(t *testing.T) {
 			Client: client,
 		}
 
-		_, err := req.GetHTTPBin()
+		_, err := req.GetHTTPBin(ctx)
 		assert.NotNil(t, err, "should have got error")
 	}
 
@@ -100,7 +103,7 @@ func Test_GetHTTPBin(t *testing.T) {
 			Client: client,
 		}
 
-		_, err := req.GetHTTPBin()
+		_, err := req.GetHTTPBin(ctx)
 		assert.NotNil(t, err)
 		assert.Equal(t, "http status code 400", err.Error())
 	}

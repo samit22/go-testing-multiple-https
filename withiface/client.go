@@ -1,10 +1,10 @@
 package withiface
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 )
 
 // Requester has Do method to make the request
@@ -17,18 +17,10 @@ type HTTPRequest struct {
 	Client Requester
 }
 
-func WithIface() {
-	client := &http.Client{Timeout: time.Second * 10}
-	r := HTTPRequest{
-		Client: client,
-	}
-	r.GetHTTPBin()
-}
-
 // GetHTTPBin gets data from http bin
-func (h *HTTPRequest) GetHTTPBin() ([]byte, error) {
+func (h *HTTPRequest) GetHTTPBin(ctx context.Context) ([]byte, error) {
 	url := "https://httpbin.org/get"
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
